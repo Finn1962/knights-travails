@@ -2,7 +2,7 @@ export function knightMoves(targetPosition, knight, playingBoard) {
   if (!targetIsWithinBoard(targetPosition)) return null;
   const board = playingBoard.board;
   const visitedPositions = [];
-  const pathes = [];
+  const diagramDiagram = {};
   const queue = [knight.position];
   let parent = null;
 
@@ -20,8 +20,7 @@ export function knightMoves(targetPosition, knight, playingBoard) {
 }
 
 function writePathDiagram(value, parent) {
-  const diagram = {};
-  if (Object.keys(diagram).length === 0) new Node(null, parent, value);
+  new Node(null, parent, value);
 }
 
 function Node(next, parent, value) {
