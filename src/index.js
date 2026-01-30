@@ -8,4 +8,4 @@ export const knight = new Knight({ x: 3, y: 4 });
 
 console.log(playingBoard.printBoard(knight));
 
-console.log(knightMoves({ x: 2, y: 6 }, knight, playingBoard));
+console.log(knightMoves({ x: 7, y: 2 }, knight, playingBoard));

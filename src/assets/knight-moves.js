@@ -2,20 +2,32 @@ export function knightMoves(targetPosition, knight, playingBoard) {
   if (!targetIsWithinBoard(targetPosition)) return null;
   const board = playingBoard.board;
   const visitedPositions = [];
-  const path = [];
+  const pathes = [];
   const queue = [knight.position];
+  let parent = null;
 
-  let i = 0;
-  while (i < 2) {
-    for (const position of queue) {
-      const currentPosition = queue.shift();
+  for (const position of queue) {
+    const currentPosition = queue.shift();
+    if (!visitedPositions.includes(currentPosition)) {
+      writePathDiagram(currentPosition, parent);
+      parent = currentPosition;
       if (positionIsEqual(currentPosition, targetPosition))
         return currentPosition;
+      visitedPositions.push(currentPosition);
       queue.push(...findNextMoves(currentPosition, board));
-      console.log(queue);
     }
-    i++;
   }
+}
+
+function writePathDiagram(value, parent) {
+  const diagram = {};
+  if (Object.keys(diagram).length === 0) new Node(null, parent, value);
+}
+
+function Node(next, parent, value) {
+  this.next = next;
+  this.parent = parent;
+  this.value = value;
 }
 
 function positionIsEqual(pos1, pos2) {
@@ -24,70 +36,31 @@ function positionIsEqual(pos1, pos2) {
 
 function targetIsWithinBoard(targetPosition) {
   return (
-    targetPosition.x < 7 &&
-    targetPosition.x > 0 &&
-    targetPosition.y < 7 &&
-    targetPosition.y > 0
+    targetPosition.x <= 7 &&
+    targetPosition.x >= 0 &&
+    targetPosition.y <= 7 &&
+    targetPosition.y >= 0
   );
 }
 
 function findNextMoves(currentPosition, board) {
+  const moveOffsets = [
+    { x: +1, y: -2 },
+    { x: +2, y: -1 },
+    { x: +2, y: +1 },
+    { x: +1, y: +2 },
+    { x: -1, y: +2 },
+    { x: -2, y: +1 },
+    { x: -2, y: -1 },
+    { x: -1, y: -2 },
+  ];
   const nextMoves = [];
-  if (
-    targetIsWithinBoard({
-      x: currentPosition.y - 2,
-      y: currentPosition.x + 1,
-    })
-  )
-    nextMoves.push(board[currentPosition.y - 2][currentPosition.x + 1]);
-  if (
-    targetIsWithinBoard({
-      x: currentPosition.y - 1,
-      y: currentPosition.x + 2,
-    })
-  )
-    nextMoves.push(board[currentPosition.y - 1][currentPosition.x + 2]);
-  if (
-    targetIsWithinBoard({
-      x: currentPosition.y + 1,
-      y: currentPosition.x + 2,
-    })
-  )
-    nextMoves.push(board[currentPosition.y + 1][currentPosition.x + 2]);
-  if (
-    targetIsWithinBoard({
-      x: currentPosition.y + 2,
-      y: currentPosition.x + 1,
-    })
-  )
-    nextMoves.push(board[currentPosition.y + 2][currentPosition.x + 1]);
-  if (
-    targetIsWithinBoard({
-      x: currentPosition.y + 2,
-      y: currentPosition.x - 1,
-    })
-  )
-    nextMoves.push(board[currentPosition.y + 2][currentPosition.x - 1]);
-  if (
-    targetIsWithinBoard({
-      x: currentPosition.y + 1,
-      y: currentPosition.x - 2,
-    })
-  )
-    nextMoves.push(board[currentPosition.y + 1][currentPosition.x - 2]);
-  if (
-    targetIsWithinBoard({
-      x: currentPosition.y - 1,
-      y: currentPosition.x - 2,
-    })
-  )
-    nextMoves.push(board[currentPosition.y - 1][currentPosition.x - 2]);
-  if (
-    targetIsWithinBoard({
-      x: currentPosition.y - 2,
-      y: currentPosition.x - 1,
-    })
-  )
-    nextMoves.push(board[currentPosition.y - 2][currentPosition.x - 1]);
+
+  for (let i = 0; i < 8; i++) {
+    const nextCoorY = currentPosition.y + moveOffsets[i].y;
+    const nextCoorX = currentPosition.x + moveOffsets[i].x;
+    if (targetIsWithinBoard({ y: nextCoorY, x: nextCoorX }))
+      nextMoves.push(board[nextCoorY][nextCoorX]);
+  }
   return nextMoves;
 }
